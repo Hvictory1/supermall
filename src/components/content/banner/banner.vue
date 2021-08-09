@@ -45,6 +45,7 @@ export default {
 <style lang="scss" scoped>
 .mint-swipe {
   height: 200px;
+  margin-top: 44px;
   .mint-swipe-item {
     text-align: center;
   }
