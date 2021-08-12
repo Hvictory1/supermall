@@ -1,21 +1,23 @@
 <template>
   <div id="app">
-    <router-view/>
-    <main-tabbar/>
-    
+    <!-- 保持缓存  exclude是除外 detail是组件中的name -->
+    <keep-alive exclude="detail">
+      <router-view />
+    </keep-alive>
+    <main-tabbar />
   </div>
 </template>
 
 <script>
-import MainTabbar from 'components/content/mainTabbar.vue';
+import MainTabbar from "components/content/mainTabbar.vue";
 export default {
   name: "App",
   components: {
-    MainTabbar
+    MainTabbar,
   },
-
 };
 </script>
 <style>
 @import "assets/css/base.css";
+@import "assets/css/reset.css";
 </style>

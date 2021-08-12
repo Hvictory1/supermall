@@ -5,7 +5,7 @@ import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
 
 Vue.use(Mint);
-
+Vue.prototype.$bus = new Vue()
 Vue.config.productionTip = false
 
 new Vue({

@@ -116,12 +116,12 @@ export default {
   name: "Category",
   data() {
     return {
-     
+      scroll: null,
     };
   },
   created() {},
   mounted() {
-    new BScroll(".wrapper", {});
+    this.scroll = new BScroll(".wrapper", {});
   },
 };
 </script>
