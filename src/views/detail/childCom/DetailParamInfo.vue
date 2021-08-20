@@ -1,8 +1,8 @@
 <template>
 	<div v-if="Object.keys(paramInfo).length !== 0" class="params-wrap">
-		<div v-for="(item, index) in paramInfo.rule">
-			<div v-for="(list, j) in item" class="flex">
-				<div v-for="(listitem, k) in list" class="rule-list-item">
+		<div v-for="item in paramInfo.rule">
+			<div v-for="list in item" class="flex">
+				<div v-for="listitem in list" class="rule-list-item">
 					{{listitem}}
 				</div>
 			</div>

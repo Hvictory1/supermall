@@ -24,8 +24,7 @@ export class Goods {
     this.discount = itemInfo.discount
     this.columns = columns
     this.services = services
-    this.realPrice = itemInfo.realPrice
-
+    this.realPrice = itemInfo.lowNowPrice
   }
 }
 //店铺

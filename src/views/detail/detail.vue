@@ -1,7 +1,17 @@
 <template>
   <div id="detail">
-    <detail-nav class="detail-nav" @titleClick="titleClick"></detail-nav>
-    <scroll class="content" :pull-up-load="true" ref="scroll">
+    <detail-nav
+      class="detail-nav"
+      @titleClick="titleClick"
+      ref="nav"
+    ></detail-nav>
+    <scroll
+      class="content"
+      :pull-up-load="true"
+      ref="scroll"
+      @scroll="contentScroll"
+      :probe-type="3"
+    >
       <detail-swiper :topImages="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -19,6 +29,7 @@
       ></detail-comment-info>
       <goods-list ref="recommend" :goods="recommendInfo"></goods-list>
     </scroll>
+    <detail-bot-bar @addCarting="addCarting"></detail-bot-bar>
   </div>
 </template>
 
@@ -29,13 +40,13 @@ import DetailBaseInfo from "./childCom/DetailBaseInfo.vue";
 import DetailShopInfo from "./childCom/DetailShopInfo.vue";
 import DetailGoodsInfo from "./childCom/DetailGoodsInfo.vue";
 import DetailParamInfo from "./childCom/DetailParamInfo.vue";
+import DetailBotBar from "./childCom/DetailBotBar.vue";
+import DetailCommentInfo from "./childCom/DetailCommentInfo.vue";
 
 import GoodsList from "components/content/goods/goodsList.vue";
 import Scroll from "components/common/scroll/scroll.vue";
 
 import { getDetail, Goods, Shop, Param, getRecommend } from "network/detail.js";
-import DetailCommentInfo from "./childCom/DetailCommentInfo.vue";
-
 export default {
   name: "detail",
   components: {
@@ -48,6 +59,7 @@ export default {
     DetailParamInfo,
     DetailCommentInfo,
     GoodsList,
+    DetailBotBar,
   },
   props: {},
   data() {
@@ -62,6 +74,7 @@ export default {
       recommendInfo: [], //推荐
       themeTopYs: [], //页面布局高度的数组
       getThemeY: null,
+      currentIndex: 0,
     };
   },
   watch: {},
@@ -90,6 +103,40 @@ export default {
     titleClick(index) {
       console.log("index", index);
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 500);
+    },
+    /**
+     *滚动组件传过来的滚动事件 传入position
+     */
+    contentScroll(position) {
+      const positionY = -position.y;
+      let length = this.themeTopYs.length;
+      for (let i = 0; i < length - 1; i++) {
+        if (
+          this.currentIndex !== i &&
+          positionY >= this.themeTopYs[i] &&
+          positionY < this.themeTopYs[i + 1]
+        ) {
+          this.currentIndex = i;
+          this.$refs.nav.currentIndex = this.currentIndex;
+        }
+      }
+    },
+    /**
+     * 加入购物车
+     */
+    addCarting() {
+      // 1.获取购物车需要展示的信息
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+
+      // 2.将商品添加到购物车内
+      this.$store.dispatch("addBuy", product).then((res) => {
+        console.log(res);
+      });
     },
   },
   created() {
@@ -158,6 +205,7 @@ export default {
       this.themeTopYs.push(this.$refs.params.$el.offsetTop - 44);
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop - 44);
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop - 44);
+      this.themeTopYs.push(Number.MAX_VALUE);
       console.log("themeTopYs", this.themeTopYs);
     }, 100);
   },
@@ -177,6 +225,6 @@ export default {
   }
 }
 .content {
-  height: calc(100% - 44px);
+  height: calc(100% - 93px);
 }
 </style>
